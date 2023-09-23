@@ -37,14 +37,7 @@ export class ContactService {
       include: [
         {
           model: UserEntity,
-          attributes: [
-            'name',
-            'email',
-            // ['name', 'user_name'],
-            // ['email', 'user_email'],
-            // ['name', 'user_name'],
-            // ['email', 'user_email'],
-          ],
+          attributes: ['name', 'email'],
         },
       ],
     });
