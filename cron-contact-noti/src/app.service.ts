@@ -46,7 +46,6 @@ export class AppService {
         await this.mailService.sendEmail(to, content);
       } catch (error) {
         Logger.error(error.message, '', 'AppService');
-        throw new Error(error);
       }
     }
   }

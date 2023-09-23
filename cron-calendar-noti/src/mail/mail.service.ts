@@ -4,8 +4,9 @@ import Mailgun, { MailgunClientOptions, MessagesSendResult } from 'mailgun.js';
 import * as formData from 'form-data';
 import { IMailgunClient } from 'mailgun.js/Interfaces';
 import { IEmailContent } from './interfaces/IEmailContent.interface';
-import { ContactEntity } from 'src/contact/entities/contact.entity';
 import { baseMailTemplate } from './constants/template.contant';
+import { CalendarEntity } from 'src/calendar/entities/calendar.entity';
+import * as dayjs from 'dayjs';
 
 @Injectable()
 export class MailService {
@@ -54,35 +55,35 @@ export class MailService {
   }
 
   generateMailContent(
-    contact: ContactEntity[],
-    date: string,
+    calendar: CalendarEntity,
   ): Pick<IEmailContent, 'text' | 'html'> {
-    const user_name = contact[0].user.name;
+    const user_name = calendar.contact.user.name;
+    const event_name = calendar.name;
+    const contact_name = calendar.contact.name;
     const calendar_url = `${this.configService.get<string>(
       'FRONTEND_URL',
     )}/calendar`;
 
+    const date_beautify = dayjs(calendar.start_dt).format(
+      'YYYY년 MM월 DD일 HH시 mm분',
+    );
+
     // generate calendar data
-    const calendar_data_text = contact.map((c) => {
-      return `${c.organization} ${c.name} ${c.position}에게 연락을 드려보세요!\n`;
-    });
-    const calendar_data_html = contact.map((c) => {
-      return `<li>${c.organization} ${c.name} ${c.position}에게 연락을 드려보세요!</li>`;
-    });
+    const calendar_data_text = `${calendar.name} 일정이 ${date_beautify}에 시작됩니다.\n\n일정 설명 : ${calendar.content}`;
+    const calendar_data_html = `<p>${calendar.name} 일정이 ${date_beautify}에 시작됩니다.</p><p>일정 설명 : ${calendar.content}</p>`;
 
     const mailContent = {
       text: baseMailTemplate.text
         .replaceAll('{user_name}', user_name)
-        .replaceAll('{date}', date)
-        .replaceAll('{calendar_data_text}', calendar_data_text.join(''))
+        .replaceAll('{contact_name}', contact_name)
+        .replaceAll('{event_name}', event_name)
+        .replaceAll('{calendar_data_text}', calendar_data_text)
         .replaceAll('{calendar_data_url}', calendar_url),
       html: baseMailTemplate.html
         .replaceAll('{user_name}', user_name)
-        .replaceAll('{date}', date)
-        .replaceAll(
-          '{calendar_data_html}',
-          `<ul>${calendar_data_html.join('')}</ul>`,
-        )
+        .replaceAll('{contact_name}', contact_name)
+        .replaceAll('{event_name}', event_name)
+        .replaceAll('{calendar_data_html}', `${calendar_data_html}`)
         .replaceAll('{calendar_data_url}', calendar_url),
     };
 
