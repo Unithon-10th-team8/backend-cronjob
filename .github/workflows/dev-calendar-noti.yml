@@ -1,4 +1,4 @@
-name: CI/CD to Unithon Cluster
+name: CI/CD to Unithon Cluster (calendar-noti-dev)
 
 on:
   push:
