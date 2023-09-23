@@ -5,6 +5,7 @@ on:
     branches: [ main ]
     paths:
       - 'cron-contact-noti/**'
+      - '.github/workflows/**'
 
 jobs:
   build:
