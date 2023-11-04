@@ -41,7 +41,7 @@ jobs:
     - name: Checkout GitOps repository
       uses: actions/checkout@v3
       with:
-        repository: Unithon-10th-team8/devops
+        repository: dokdo2013/haenu-cluster
         token: ${{ secrets.GITOPS_TOKEN }}
         path: gitops
 
@@ -50,7 +50,7 @@ jobs:
         IMAGE_NAME="unithon-contact-noti-dev"
         APP_NAME="backend-cronjob-dev"
         FILE_NAME="cron-contact-noti"
-        cd gitops/app/${APP_NAME}
+        cd gitops/apps/unithon/${APP_NAME}
         sed -i "s|image: ${{ secrets.DOCKERHUB_USERNAME }}/${IMAGE_NAME}:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/${IMAGE_NAME}:${{ github.run_number }}|g" ${FILE_NAME}.yaml
         git config user.name "dokdo2013"
         git config user.email "hyeonwoo5342@gmail.com"
